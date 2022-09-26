@@ -1,0 +1,89 @@
+public class Main {
+
+    public static void main(String[] args) {
+        //TODO напишите консольное приложение для работы с классом больница, учитывая, что сгенерированные и вычисленные переменные,
+        // нельзя будет менять.
+        System.out.printf("");;
+    }
+}
+
+     class Hospital {
+    static int patientsCount ;
+    static float [] patientsTemp ;
+    static int countHealthy ;
+    static String stringTemp ;
+    static double midleTemp ;
+
+    public Hospital(int patientsCount) {
+        if (patientsCount < 0)
+        {
+            throw new IllegalArgumentException();
+        }
+        else
+        {
+            Hospital.patientsCount = patientsCount;
+        }
+    }
+
+    //нужно кол-во пациентов
+    public static float[] generatePatientsTemperatures() {
+
+        float[] arrayTemp = new float[patientsCount];
+        final float min = 32;
+        final float max = 39;
+        for (int i = 0; i < arrayTemp.length; i++) {
+            arrayTemp[i] = (float) ((Math.random() * ((max - min) + 1)) + min);
+        }
+        return  Hospital.patientsTemp = arrayTemp;
+    }
+
+    //нужна генерация температур
+    public static int getCountHealthy() {
+
+        return 0;
+
+    }
+
+    //нужна генерация температур
+    public static String getTemperaturesToString() {
+    //TODO реализовать получение массива температур в виде строки <double>, <double>, <double>
+    // если метод уже был вызван ранее, не выполнять подсчет снова, а возращать текущее вычисленное значение
+    // если генерация температур не была выполнена, вызвать метод генерации
+		String strTemp = "";
+		if(patientsTemp == null)
+			generatePatientsTemperatures();
+
+        for (int i = 0; i < patientsTemp.length; i++) {
+            strTemp += String.format("%.1f", patientsTemp[i]);
+            if (i < patientsTemp.length - 1) {
+                strTemp += " ";
+            }
+        }
+        Hospital.stringTemp = strTemp;
+        return Hospital.stringTemp = strTemp;
+		
+	
+ 	
+}
+
+    //Нужна генерация температур
+    public static double getAverageTemp() {
+
+        return 0;
+    }
+
+
+    //нужны температуры, средняя температура и кол-во здоровых
+    public static String getReport() {
+
+        String result;
+        String midleTempString = String.format("%.2f", midleTemp);
+        result = "Температуры пациентов: " +
+                stringTemp + "\n"
+                + "Средняя температура: " + midleTempString.replace('.', ',') + "\n"
+                + "Количество здоровых: " + countHealthy;
+
+
+        return result;
+    }
+}
