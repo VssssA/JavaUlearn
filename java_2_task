@@ -1,89 +1,116 @@
-public class Main {
+package com.max.idea;
+import java.util.Arrays;
+import java.util.Scanner;
 
-    public static void main(String[] args) {
-        //TODO напишите консольное приложение для работы с классом больница, учитывая, что сгенерированные и вычисленные переменные,
-        // нельзя будет менять.
-        System.out.printf("");;
+public class Main {
+    private static final Scanner in = new Scanner(System.in);
+    public static void main(String[] args)
+    {
+        newHospital();
+    }
+    private static void newHospital(){
+        System.out.print("Введите количество больных: ");
+        while(readInput() < 0)
+            System.out.println("Неккорктный ввод");
+        Hospital hospital = new Hospital(readInput());
+        System.out.println(hospital.getReport());
+    }
+    private static Integer readInput(){
+        int input;
+        String str = in.next();
+        input = Integer.parseInt(str);
+        return input;
     }
 }
-
-     class Hospital {
-    static int patientsCount ;
-    static float [] patientsTemp ;
-    static int countHealthy ;
-    static String stringTemp ;
-    static double midleTemp ;
-
-    public Hospital(int patientsCount) {
+class Hospital {
+    private final int patientsCount;
+    private int healthyPatients;
+    private float[] patientsTemp = null;
+    private String stringTemp;
+    private double middleTemp;
+    private String report;
+    public Hospital(int patientsCount)
+    {
         if (patientsCount < 0)
         {
             throw new IllegalArgumentException();
-        }
-        else
+        } else
         {
-            Hospital.patientsCount = patientsCount;
+            this.patientsCount = patientsCount;
+            generatePatientsTemperatures();
+            this.healthyPatients = -1;
+            this.middleTemp = -1;
         }
     }
-
-    //нужно кол-во пациентов
-    public static float[] generatePatientsTemperatures() {
-
+    public float[] generatePatientsTemperatures()
+    {
         float[] arrayTemp = new float[patientsCount];
-        final float min = 32;
-        final float max = 39;
-        for (int i = 0; i < arrayTemp.length; i++) {
-            arrayTemp[i] = (float) ((Math.random() * ((max - min) + 1)) + min);
+        if(patientsTemp == null)
+        {
+            for (int i = 0; i < arrayTemp.length; i++)
+        {
+            arrayTemp[i] = (float) ((Math.random() * ((39f - 32f) + 1)) + 32f);
         }
-        return  Hospital.patientsTemp = arrayTemp;
+            patientsTemp = arrayTemp;
+        }
+        return patientsTemp;
     }
 
-    //нужна генерация температур
-    public static int getCountHealthy() {
+    public String getTemperaturesToString()
+    {
+        if (stringTemp == null)
+        {
+            StringBuilder result = new StringBuilder();
+            StringBuilder currentTemp;
 
-        return 0;
-
+            for (Float temp : patientsTemp)
+            {
+                currentTemp = new StringBuilder(String.format("%.1f",temp));
+                currentTemp.setCharAt(2,',');
+                result.append(currentTemp).append(' ');
+            }
+            stringTemp = result.deleteCharAt(result.length() - 1).toString();
+        }
+        return stringTemp;
     }
-
-    //нужна генерация температур
-    public static String getTemperaturesToString() {
-    //TODO реализовать получение массива температур в виде строки <double>, <double>, <double>
-    // если метод уже был вызван ранее, не выполнять подсчет снова, а возращать текущее вычисленное значение
-    // если генерация температур не была выполнена, вызвать метод генерации
-		String strTemp = "";
-		if(patientsTemp == null)
-			generatePatientsTemperatures();
-
-        for (int i = 0; i < patientsTemp.length; i++) {
-            strTemp += String.format("%.1f", patientsTemp[i]);
-            if (i < patientsTemp.length - 1) {
-                strTemp += " ";
+    public int getCountHealthy()
+    {
+        if (healthyPatients == -1)
+        {
+            healthyPatients = 0;
+            for (Float temp : patientsTemp)
+            {
+                if ((temp >= 36.2) & (temp <= 36.9))
+                {
+                    healthyPatients++;
+                }
             }
         }
-        Hospital.stringTemp = strTemp;
-        return Hospital.stringTemp = strTemp;
-		
-	
- 	
-}
-
-    //Нужна генерация температур
-    public static double getAverageTemp() {
-
-        return 0;
+        return healthyPatients;
     }
 
+    public double getAverageTemp() {
+        var tempD = new double[patientsCount];
+        var i = 0;
 
-    //нужны температуры, средняя температура и кол-во здоровых
-    public static String getReport() {
-
-        String result;
-        String midleTempString = String.format("%.2f", midleTemp);
-        result = "Температуры пациентов: " +
-                stringTemp + "\n"
-                + "Средняя температура: " + midleTempString.replace('.', ',') + "\n"
-                + "Количество здоровых: " + countHealthy;
-
-
-        return result;
+        if (middleTemp == -1)
+        {
+            middleTemp = 0;
+            for (Float temp : patientsTemp)
+            {
+                tempD[i++] = temp.doubleValue();
+            }
+            middleTemp = Arrays.stream(tempD).average().getAsDouble();
+        }
+        return middleTemp;
+    }
+    public String getReport() {
+        if (report == null)
+        {
+            report = "Температуры пациентов: " + getTemperaturesToString() +
+                    "\nСредняя температура: " + String.format("%.2f", getAverageTemp()) +
+                    "\nКоличество здоровых: " + getCountHealthy();
+        }
+        return report;
     }
 }
